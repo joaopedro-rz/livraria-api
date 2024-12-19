@@ -1,0 +1,158 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API da Livraria",
+      "version": "1.0.0",
+      "description": "Documentação da API REST para gerenciar usuários, livros e autores."
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Servidor Local"
+      }
+    ],
+    "paths": {
+      "/usuarios/install": {
+        "get": {
+          "summary": "Instalar Admin",
+          "description": "Cria um usuário administrador padrão.",
+          "responses": {
+            "201": {
+              "description": "Administrador criado com sucesso."
+            },
+            "400": {
+              "description": "Já existe um administrador no sistema."
+            }
+          }
+        }
+      },
+      "/usuarios": {
+        "post": {
+          "summary": "Cadastrar Usuário",
+          "description": "Cadastra um novo usuário comum no sistema.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string" },
+                    "email": { "type": "string" },
+                    "senha": { "type": "string" }
+                  },
+                  "required": ["nome", "email", "senha"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuário criado com sucesso."
+            },
+            "400": {
+              "description": "Erro nos dados fornecidos."
+            }
+          }
+        }
+      },
+      "/usuarios/login": {
+        "post": {
+          "summary": "Login",
+          "description": "Autentica um usuário e retorna um token JWT.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string" },
+                    "senha": { "type": "string" }
+                  },
+                  "required": ["email", "senha"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Autenticação bem-sucedida.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            }
+          }
+        }
+      },
+      "/livros": {
+        "get": {
+          "summary": "Listar Livros",
+          "description": "Retorna uma lista de livros cadastrados.",
+          "parameters": [
+            {
+              "name": "limite",
+              "in": "query",
+              "description": "Número máximo de livros por página (5, 10 ou 30).",
+              "schema": { "type": "integer", "default": 10 }
+            },
+            {
+              "name": "pagina",
+              "in": "query",
+              "description": "Página a ser retornada.",
+              "schema": { "type": "integer", "default": 1 }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de livros retornada com sucesso."
+            }
+          }
+        },
+        "post": {
+          "summary": "Criar Livro",
+          "description": "Cadastra um novo livro no sistema.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "titulo": { "type": "string" },
+                    "genero": { "type": "string" },
+                    "anoPublicacao": { "type": "integer" },
+                    "quantidade": { "type": "integer" },
+                    "autores": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  },
+                  "required": ["titulo", "genero", "anoPublicacao", "quantidade", "autores"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Livro criado com sucesso."
+            },
+            "400": {
+              "description": "Erro nos dados fornecidos ou autores inválidos."
+            }
+          }
+        }
+      }
+    }
+  }
+  
